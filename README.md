@@ -1,1 +1,1 @@
-# SmartScore
+#CritiQuiz
