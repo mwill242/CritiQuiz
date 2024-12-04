@@ -1,4 +1,4 @@
-AI-Powered Critical Thinking Testing Service.
+Welcome to the AI-Powered Critical Thinking Testing Service called "CritiQuiz".
     Revolutionizing Education with Adaptive Learning Technology.
 This repository contains the development materials, documents, and resources for our AI-Powered Testing Service Application, designed to transform how students learn and educators assess.
 
