@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Chat - CritiQuiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cambay:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>CritiQuiz Chat</h1>
+    
+        <div id="chatContainer" class="chat-container">
+            
+            <div id="response" class="response-box"></div>
+            
+            <div class="chat-input-wrapper">
+                <textarea id="userInput" placeholder="Type your message..." rows="2"></textarea>
+                <button id="sendMessage" class="full-width-button">Send</button>
+            </div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.getElementById('sendMessage').onclick = async function() {
+            const userInput = document.getElementById('userInput').value.trim();
+            const responseDiv = document.getElementById('response');
+    
+            if (!userInput) return; 
+    
+            responseDiv.innerHTML += `<p><strong>You:</strong> ${userInput.replace(/\n/g, '<br>')}</p>`;
+    
+            document.getElementById('userInput').value = '';
+    
+            responseDiv.scrollTop = responseDiv.scrollHeight;
+    
+            // Send user's message to the server
+            const res = await fetch('/api/user-response', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: userInput })
+            });
+    
+            if (res.ok) {
+                const data = await res.json();
+    
+                // Append assistant's response with paragraph breaks
+                const formattedResponse = data.response.replace(/\n/g, '<br>');
+                responseDiv.innerHTML += `<p><strong>Qisra:</strong> ${formattedResponse}</p>`;
+    
+                responseDiv.scrollTop = responseDiv.scrollHeight;
+            } else {
+                alert('Error sending message. Please try again.');
+            }
+        };
+    </script>
+    
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Portal</h1>
+
+        <!-- Section to Modify System Message -->
+        <div class="admin-section">
+            <h2>Modify System Message</h2>
+            <textarea id="systemMessageInput" placeholder="Enter new instructions..." rows="4"></textarea>
+            <button id="updateSystemMessageButton" class="admin-button">Update Message</button>
+            <p id="messageUpdateStatus" class="success-message"></p>
+        </div>
+
+        <!-- Section to Upload a New File -->
+        <div class="admin-section">
+            <h2>Upload New File for Assistant</h2>
+            <input type="file" id="fileInput">
+            <button id="uploadFileButton" class="admin-button">Upload Assessment</button>
+            <p id="fileUploadStatus" class="success-message"></p>
+        </div>
+
+        <!-- Section to Create a New Thread -->
+    <div class="admin-section">
+        <button id="createThreadButton" class="admin-button">Create New Assessment for Student</button>
+        <p id="threadMessage" class="success-message"></p>
+    </div>
+    </div>
+
+    
+
+    <script>
+        // Create a New Thread
+        document.getElementById('createThreadButton').onclick = async () => {
+            try {
+                const res = await fetch('/api/admin/create-thread', { method: 'POST' });
+                if (res.ok) {
+                    document.getElementById('threadMessage').textContent = 'New thread created successfully!';
+                } else {
+                    alert("Error creating new thread.");
+                }
+            } catch (error) {
+                console.error("Create thread error:", error.message);
+            }
+        };
+
+        // Modify System Message
+        document.getElementById('updateSystemMessageButton').onclick = async () => {
+            const newSystemMessage = document.getElementById('systemMessageInput').value.trim();
+            if (!newSystemMessage) return alert("Please enter a valid message.");
+
+            try {
+                const res = await fetch('/api/admin/modify-system-message', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ systemMessage: newSystemMessage })
+                });
+
+                if (res.ok) {
+                    document.getElementById('messageUpdateStatus').textContent = 'System message updated successfully!';
+                } else {
+                    alert("Error updating system message.");
+                }
+            } catch (error) {
+                console.error("Update system message error:", error.message);
+            }
+        };
+
+        // Upload a New File
+        document.getElementById('uploadFileButton').onclick = async () => {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            if (!file) return alert("Please select a file to upload.");
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const res = await fetch('/api/admin/upload-file', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    document.getElementById('fileUploadStatus').textContent = 'File uploaded successfully!';
+                } else {
+                    alert("Error uploading file.");
+                }
+            } catch (error) {
+                console.error("File upload error:", error.message);
+            }
+        };
+    </script>
+</body>
+</html>
